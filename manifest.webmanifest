@@ -1,0 +1,16 @@
+{
+  "name": "Regrow",
+  "short_name": "Regrow",
+  "description": "Quit weed, one day at a time. Your meadow grows as you do.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF8EE",
+  "theme_color": "#FFF8EE",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
