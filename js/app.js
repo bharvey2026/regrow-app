@@ -71,7 +71,7 @@
     const t = (id, label, icon) => `<button class="${tab === id ? 'on' : ''}" data-act="tab" data-tab="${id}" aria-current="${tab === id ? 'page' : 'false'}">${icon}${label}</button>`;
     return `<nav class="tabbar ${night ? 'night' : ''}" aria-label="Main">${t('today', 'Today', I.leaf)}${t('journey', 'Journey', I.path)}${t('body', 'Body', I.pulse)}${t('tonight', 'Tonight', I.moon)}</nav>`;
   }
-  const sosDock = (night) => `<div class="sos-dock ${night ? 'night' : ''}"><button class="btn" data-act="craving">${I.waves} I'm having a craving</button></div>`;
+  const sosDock = (night) => `<button class="moment ${night ? 'night' : ''}" data-act="craving" aria-label="Need a moment: open the breathing and craving tools">${I.waves} Need a moment</button>`;
 
   // ---------- Today ----------
   function today(p) {
@@ -290,9 +290,14 @@
         content = `<h1 class="display">Play the tape forward.</h1>${pack.tapeForward.slice(0, n).map((t, i) => `<div class="card ${i === pack.tapeForward.length - 1 ? 'mint' : ''} row" style="align-items:flex-start;box-shadow:none"><b style="width:28px;height:28px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;background:${i === pack.tapeForward.length - 1 ? 'var(--leaf)' : 'var(--sky)'};color:${i === pack.tapeForward.length - 1 ? '#fff' : 'var(--sky-ink)'}">${i + 1}</b><b style="font-size:17px">${t}</b></div>`).join('')}${n < pack.tapeForward.length ? `<button class="btn small paper" style="align-self:flex-start" data-act="tapemore">Then what?</button>` : ''}`;
       }
       if (o.tool === 'distract') {
-        const ideas = o.ideas || pack.distractions.slice().sort(() => Math.random() - .5).slice(0, 3);
+        const mine = S().customDistractions;
+        const ideas = o.ideas || pack.distractions.slice().sort(() => Math.random() - .5).slice(0, mine.length ? 2 : 3);
         o.ideas = ideas;
-        content = `<h1 class="display">Change the channel.</h1><p class="body" style="color:var(--sky-ink)">Pick one and do it right now. A few minutes of moving your body or your focus lets the craving pass.</p>${ideas.map(t => `<div class="card row" style="box-shadow:none"><b style="font-size:17px">→ ${t}</b></div>`).join('')}<button class="btn small paper" style="align-self:flex-start" data-act="shuffle">Shuffle</button>`;
+        content = `<h1 class="display">Change the channel.</h1><p class="body" style="color:var(--sky-ink)">Pick one and do it right now. A few minutes of moving your body or your focus lets the craving pass.</p>
+          ${mine.length ? `<span class="eyebrow" style="color:var(--sky-ink)">Your ideas</span>${mine.map(t => `<div class="card mint row" style="box-shadow:none"><b style="font-size:17px">→ ${esc(t)}</b></div>`).join('')}<span class="eyebrow" style="color:var(--sky-ink)">Or try</span>` : ''}
+          ${ideas.map(t => `<div class="card row" style="box-shadow:none"><b style="font-size:17px">→ ${t}</b></div>`).join('')}
+          <button class="btn small paper" style="align-self:flex-start" data-act="shuffle">Shuffle</button>
+          <div class="row" style="gap:8px"><input class="field" style="font-size:16px;padding:12px 14px" placeholder="Add your own, e.g. peppermint tea" data-model="newIdea" value="${esc(o.newIdea || '')}"><button class="btn small green" style="flex:none" data-act="addidea">Add</button></div>`;
       }
       return full(`<div class="row between">${closeBtn()}<span class="card row small" style="padding:10px 16px;border-radius:999px" id="countdown">1:30 left</span></div>
         <div class="stack" style="flex:1;gap:14px">${content}</div>
@@ -478,6 +483,11 @@
       <span class="eyebrow soft">Your plan</span>
       <div class="card stack" style="gap:6px"><span class="row between"><span class="soft">Quitting</span><b>${Store.pack().name}</b></span><span class="row between"><span class="soft">Started</span><b>${new Date(s.profile.start).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}</b></span><span class="row between"><span class="soft">Weekly spend</span><b>${money(s.profile.weeklySpend)}</b></span><span class="row between"><span class="soft">Stash cleared</span><b>${s.clearOut.stash ? 'Yes' : 'Not yet'}</b></span></div>
       <span class="eyebrow soft">Your why</span><div class="card body">${esc(s.profile.why)}</div>
+      <span class="eyebrow soft">Your distraction ideas</span>
+      <div class="card stack" style="gap:8px">
+        ${s.customDistractions.length ? s.customDistractions.map((t, i) => `<div class="row between"><b>${esc(t)}</b><button class="link" style="color:var(--ink-soft)" data-act="removeidea" data-i="${i}" aria-label="Remove ${esc(t)}">Remove</button></div>`).join('') : '<span class="small soft">Add things that work for you. They show first when you tap Distract me.</span>'}
+        <div class="row" style="gap:8px"><input class="field" style="font-size:16px;padding:12px 14px" placeholder="e.g. Peppermint tea" data-model="newIdea" value="${esc(overlay.newIdea || '')}"><button class="btn small green" style="flex:none" data-act="addidea">Add</button></div>
+      </div>
       ${s.clearOut.stash ? '' : '<button class="btn small paper" data-act="clearout">Clear out and unlock the hive</button>'}
       <p class="small soft">Everything stays on this phone. This is a test version, so all Regrow+ features are switched on.</p>
       <button class="quiet" style="color:var(--coral-deep)" data-act="confirmreset">Start over</button>`);
@@ -553,6 +563,12 @@
     craving: () => { overlay = { kind: 'craving', stage: 'intensity' }; render(); },
     intensity: (d) => { overlay = { kind: 'craving', stage: 'ride', tool: 'wave', intensity: d.value ? +d.value : null, tools: ['wave'] }; render(); startCravingTimers(); },
     tool: (d) => { overlay.tool = d.tool; overlay.tools.push(d.tool); overlay.revealed = 1; overlay.ideas = null; render(); },
+    addidea: () => {
+      const t = (overlay.newIdea || '').trim(); if (!t) return;
+      Store.update(s => { if (!s.customDistractions.includes(t)) s.customDistractions.push(t); });
+      overlay.newIdea = ''; overlay.ideas = null; render();
+    },
+    removeidea: (d) => { Store.update(s => s.customDistractions.splice(+d.i, 1)); render(); },
     tapemore: () => { overlay.revealed = (overlay.revealed || 1) + 1; render(); },
     shuffle: () => { overlay.ideas = null; render(); },
     beaten: () => {

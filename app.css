@@ -21,7 +21,7 @@ button { cursor: pointer; }
 h1, h2, h3, p { margin: 0; }
 
 #app { min-height: 100%; }
-.screen { min-height: 100vh; min-height: 100dvh; padding: calc(var(--safe-top) + 16px) 16px calc(var(--safe-bottom) + 170px); max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+.screen { min-height: 100vh; min-height: 100dvh; padding: calc(var(--safe-top) + 16px) 16px calc(var(--safe-bottom) + 140px); max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
 .screen.night { background: var(--night); color: var(--moon); }
 body.night { background: var(--night); }
 .row { display: flex; align-items: center; gap: 10px; }
@@ -99,6 +99,12 @@ button.card { border: 0; text-align: left; width: 100%; color: inherit; }
 .tabbar svg { width: 24px; height: 24px; }
 .sos-dock { position: fixed; left: 0; right: 0; bottom: calc(var(--safe-bottom) + 70px); z-index: 19; padding: 16px 16px 6px; background: linear-gradient(to bottom, rgba(255,248,238,0), var(--cream) 45%); max-width: 520px; margin: 0 auto; }
 .sos-dock.night { background: linear-gradient(to bottom, rgba(35,34,70,0), var(--night) 45%); }
+
+/* Discreet way into the craving tools: small, soft, no trigger words */
+.moment { position: fixed; right: 16px; bottom: calc(var(--safe-bottom) + 78px); z-index: 19; border: 0; height: 44px; padding: 0 16px 0 12px; border-radius: 999px; background: var(--lilac); color: var(--lilac-ink); font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(59,47,42,.10); }
+.moment svg { width: 18px; height: 18px; }
+.moment.night { background: var(--night-raised); color: var(--night-soft); box-shadow: none; }
+@media (min-width: 560px) { .moment { right: calc(50% - 244px); } }
 
 /* Sheets */
 .sheet-backdrop { position: fixed; inset: 0; z-index: 40; background: rgba(59,47,42,.35); display: flex; align-items: flex-end; justify-content: center; animation: fade .2s; }

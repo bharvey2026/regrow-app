@@ -13,6 +13,7 @@
     checkIns: [],       // { at, period, mood, craving, triggers, note }
     journal: [],        // { at, prompt, text }
     rewards: [],        // { id, day, title, cost, claimed }
+    customDistractions: [], // the user's own ideas, shown first in Distract me
     celebrated: [],     // milestone days already celebrated
     slipClearedAt: null // clear-out done after the latest slip
   });
