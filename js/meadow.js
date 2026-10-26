@@ -98,9 +98,27 @@
   }
 
   function secondHive(locked) {
-    return `<g opacity="${locked ? 0.45 : 1}"><rect x="363" y="262" width="6" height="18" rx="2.5" fill="#A7764F"/><rect x="350" y="259" width="32" height="6" rx="3" fill="#B98559"/>
-      <ellipse cx="366" cy="251" rx="18" ry="7" fill="#E9B44C"/><ellipse cx="366" cy="243" rx="16" ry="7" fill="#F2C35E"/><ellipse cx="366" cy="236" rx="13" ry="6" fill="#E9B44C"/>
-      <ellipse cx="366" cy="230" rx="8" ry="4.5" fill="#F2C35E"/><path d="M360 256 a6 5.5 0 0 1 12 0 z" fill="#7A5230"/></g>`;
+    return `<g opacity="${locked ? 0.45 : 1}">${boxHive(366, 262, 28, [15, 12], 12)}</g>`;
+  }
+
+  // Front view of a box hive: legs, stand, stacked boxes (bottom first), entrance slot, pitched coral roof.
+  function boxHive(cx, standY, w, boxes, roofH) {
+    const half = w / 2;
+    let s = `<rect x="${cx - half + 3}" y="${standY}" width="${w * 0.13}" height="${roofH * 2}" rx="2" fill="#A7764F"/>
+      <rect x="${cx + half - 3 - w * 0.13}" y="${standY}" width="${w * 0.13}" height="${roofH * 2}" rx="2" fill="#A7764F"/>
+      <rect x="${cx - half - 5}" y="${standY - 1}" width="${w + 10}" height="${w * 0.14}" rx="3" fill="#B98559"/>`;
+    let y = standY - 1;
+    boxes.forEach((h, i) => {
+      const top = y - h;
+      s += `<rect x="${cx - half}" y="${top}" width="${w}" height="${h - 1}" rx="2.5" fill="${i % 2 ? '#E9B44C' : '#F2C35E'}"/>
+        <rect x="${cx - half}" y="${y - 3}" width="${w}" height="2" fill="#D9A23E"/>
+        <rect x="${cx - w * 0.18}" y="${top + h * 0.3}" width="${w * 0.36}" height="${Math.max(2, h * 0.12)}" rx="1" fill="#C98F2E" opacity="0.8"/>`;
+      if (i === 0) s += `<rect x="${cx - w * 0.28}" y="${y - h * 0.3}" width="${w * 0.56}" height="${Math.max(3, h * 0.14)}" rx="1.6" fill="#4A3221"/>`;
+      y = top;
+    });
+    s += `<path d="M${cx - half - 6} ${y + 1} L${cx} ${y - roofH} L${cx + half + 6} ${y + 1} Z" fill="#FF7A5C"/>
+      <path d="M${cx - half + 1} ${y + 1} L${cx} ${y - roofH + 5} L${cx + half - 1} ${y + 1} Z" fill="#FF8A65"/>`;
+    return s;
   }
 
   function butterfly(x, y, colour, i) {
@@ -168,10 +186,9 @@
 
     // Hive
     const hiveOpacity = o.hiveLocked ? 0.45 : o.foraging ? 0.7 : 1;
-    s += `<g opacity="${hiveOpacity}"><rect x="311" y="262" width="8" height="34" rx="3" fill="#A7764F"/><rect x="290" y="258" width="50" height="8" rx="4" fill="#B98559"/>
-      <ellipse cx="315" cy="248" rx="30" ry="11" fill="#E9B44C"/><ellipse cx="315" cy="236" rx="27" ry="11" fill="#F2C35E"/><ellipse cx="315" cy="225" rx="23" ry="10" fill="#E9B44C"/>
-      <ellipse cx="315" cy="215" rx="18" ry="9" fill="#F2C35E"/><ellipse cx="315" cy="206" rx="12" ry="7" fill="#E9B44C"/><path d="M305 254 a10 9 0 0 1 20 0 z" fill="#7A5230"/>`;
-    if (o.hiveLocked) s += `<circle cx="336" cy="204" r="13" fill="#FFFFFF"/><rect x="330" y="203" width="12" height="9" rx="2" fill="#7A6A60"/><path d="M332.5 203 v-3 a3.5 3.5 0 0 1 7 0 v3" fill="none" stroke="#7A6A60" stroke-width="2"/>`;
+    // Box hive with a pitched roof, matching the app icon
+    s += `<g opacity="${hiveOpacity}">${boxHive(315, 254, 46, [24, 18, 16], 18)}`;
+    if (o.hiveLocked) s += `<circle cx="341" cy="206" r="13" fill="#FFFFFF"/><rect x="335" y="205" width="12" height="9" rx="2" fill="#7A6A60"/><path d="M337.5 205 v-3 a3.5 3.5 0 0 1 7 0 v3" fill="none" stroke="#7A6A60" stroke-width="2"/>`;
     const jars = o.hiveLocked ? 0 : Math.min(5, o.jars || 0);
     for (let i = 0; i < jars; i++) { const x = 290 + i * 14 - (jars - 1) * 3; s += `<rect x="${x}" y="276" width="13" height="16" rx="4" fill="#F2B630"/><rect x="${x + 1}" y="272" width="11" height="5" rx="2" fill="#A7764F"/><rect x="${x + 3}" y="280" width="3" height="7" rx="1.5" fill="#FFFFFF" opacity="0.6"/>`; }
     s += '</g>';

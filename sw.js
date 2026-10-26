@@ -1,6 +1,6 @@
 // App shell cached for offline use; network-first so updates arrive straight away.
 // Bump VERSION on every deploy so old caches are cleared.
-const VERSION = 'regrow-v3';
+const VERSION = 'regrow-v4';
 const SHELL = ['./', 'index.html', 'app.css', 'manifest.webmanifest', 'js/content.js', 'js/store.js', 'js/meadow.js', 'js/app.js', 'icons/icon-180.png', 'icons/icon-192.png'];
 
 self.addEventListener('install', e => {
