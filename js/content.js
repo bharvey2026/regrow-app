@@ -56,6 +56,21 @@ window.MILESTONES = [
   { d: 270, t: '9 months' }, { d: 365, t: '1 year' }, { d: 730, t: '2 years' }, { d: 1095, t: '3 years' },
 ];
 
+// What each milestone adds to the meadow. Gated on completed good days, like the milestones.
+window.GARDEN = [
+  { d: 1, t: 'Fresh shoots', line: 'Grass is pushing up through the bare ground.' },
+  { d: 3, t: 'A sapling', line: 'A sapling has taken root on the hill. Another joins every few good days.' },
+  { d: 7, t: 'A stream', line: 'Water is running through your meadow again.' },
+  { d: 14, t: 'Butterflies', line: 'Your first bloom became a wildflower, and the butterflies found it.' },
+  { d: 21, t: 'Lavender', line: 'Lavender by the hive, for the bees.' },
+  { d: 30, t: 'A pond', line: 'The stream has filled a little pond.' },
+  { d: 60, t: 'Sunflowers', line: 'Sunflowers, taller than Sprout.' },
+  { d: 90, t: 'Fruit trees', line: 'Your first trees are old enough to fruit.' },
+  { d: 180, t: 'A bench', line: 'Somewhere to sit and take it all in.' },
+  { d: 270, t: 'A second hive', line: 'The colony has grown big enough to split.' },
+  { d: 365, t: 'The old oak', line: 'A year of good days, grown into one great tree.' },
+];
+
 window.MILESTONE_LINES = {
   1: 'Day one done. That was the first step.',
   3: 'Through the toughest stretch of withdrawal for most people.',

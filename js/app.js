@@ -138,6 +138,7 @@
         <div class="dot"><i>${done ? '✓' : ''}</i></div>
         <div class="stack" style="gap:6px;flex:1;padding-bottom:4px">
           <div class="row between"><b style="font-size:17px;${done || isNext ? '' : 'color:#5E5047'}">${m.t}</b><span class="small" style="color:${done ? 'var(--leaf-deep)' : isNext ? 'var(--coral-deep)' : 'var(--ink-muted)'}">${done ? 'Done' : isNext ? `${plural(m.d - p.cleanDays, 'day')} to go` : `Day ${m.d}`}</span></div>
+          ${garden(m.d) ? `<span class="small" style="display:flex;gap:6px;align-items:center;color:${done ? 'var(--leaf-deep)' : 'var(--ink-soft)'}"><span style="width:15px;height:15px;display:inline-flex;flex:none">${I.leaf}</span>Meadow · ${esc(garden(m.d).t)}</span>` : ''}
           ${reward ? `<button class="reward ${reward.claimed ? 'claimed' : ''}" data-act="editreward" data-id="${reward.id}">${I.gift}<span class="stack" style="gap:0;flex:1"><b style="font-size:14px">${esc(reward.title)}</b><span class="small soft">${rewardNote(reward, p)}</span></span></button>` : (!done ? `<button class="link" style="padding:2px 0;font-size:14px" data-act="addreward" data-day="${m.d}">+ Add a reward</button>` : '')}
         </div></div>`;
     }).join('');
@@ -166,6 +167,8 @@
       <div class="card stack" style="gap:12px">${body}</div>
     </section>`;
   }
+
+  function garden(day) { return (window.GARDEN || []).find(f => f.d === day); }
 
   function projectedMoney(day) {
     const p = S().profile; return Math.max(0, p.weeklySpend / 7 * day);
@@ -419,6 +422,7 @@
     const petals = Array.from({ length: 14 }, (_, i) => `<ellipse class="fallpetal" style="animation-delay:${(i * 0.37) % 5}s;transform-box:fill-box" cx="${20 + i * 26}" cy="0" rx="5" ry="10" fill="${colors[i % 5]}"/>`).join('');
     return full(`<div class="meadow" style="margin:0 -6px">${meadow(p, { night: false, petals: m.d % 14 === 0 ? 14 : p.petals, blooms: m.d % 14 === 0 ? Math.max(0, p.blooms - 1) : p.blooms })}<svg viewBox="0 0 390 300" style="position:absolute;inset:0;pointer-events:none" aria-hidden="true">${petals}</svg></div>
       <div class="stack" style="gap:4px"><span class="eyebrow" style="color:var(--coral-deep)">Milestone · ${m.t}</span><h1 class="big">${m.t[0].toUpperCase() + m.t.slice(1)}.</h1><p class="body soft">${MILESTONE_LINES[m.d] || 'Look how far you\'ve come.'}</p></div>
+      ${garden(m.d) ? `<div class="card mint row" style="align-items:flex-start"><span class="badge" style="background:#fff;color:var(--leaf-deep)">${I.leaf}</span><span class="stack" style="gap:2px"><span class="eyebrow" style="color:var(--leaf-deep)">New in your meadow</span><b style="font-size:17px">${esc(garden(m.d).t)}</b><span class="body" style="font-size:14px">${esc(garden(m.d).line)}</span></span></div>` : ''}
       ${reward ? `<div class="card butter stack" style="gap:4px;box-shadow:0 4px 0 var(--butter-deep)"><span class="eyebrow" style="color:var(--butter-ink)">You promised yourself</span><b style="font-size:22px">${esc(reward.title)}</b><span class="body" style="font-size:14px">${reward.cost ? `${money(reward.cost)} from your honey. You've got ${money(p.money)}${p.money >= reward.cost ? ', so go and enjoy it.' : '.'}` : 'Go and enjoy it. You earned this.'}</span></div>` : `<button class="card row" data-act="addreward" data-day="${Store.nextMilestone(p.cleanDays)?.d || ''}">${I.gift}<span class="stack" style="gap:2px"><b>Set a reward for ${Store.nextMilestone(p.cleanDays)?.t || 'your next milestone'}</b><span class="small soft">Something to look forward to.</span></span></button>`}
       <div class="grid3" style="text-align:center"><div><b style="font-size:20px">${p.goodDays}</b><br><span class="small soft">good days</span></div><div><b style="font-size:20px">${p.beaten}</b><br><span class="small soft">cravings beaten</span></div><div><b style="font-size:20px">${money(p.money)}</b><br><span class="small soft">kept</span></div></div>
       <div style="flex:1"></div>
